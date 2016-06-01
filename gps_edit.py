@@ -1,6 +1,6 @@
 # By: incognybble
 # Created: 7th Feb 2016
-# Last modified: 21st Feb 2016
+# Last modified: 2nd Jun 2016
 
 import os
 
@@ -61,6 +61,8 @@ def remove_gps_folder(folder, new_folder=None, original=True, status_print=False
     
     if new_folder == None:
         new_folder = folder
+    elif not os.path.exists(new_folder):
+        os.mkdir(new_folder)
     
     photos = os.listdir(folder)
     photos.sort()
