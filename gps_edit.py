@@ -1,11 +1,24 @@
 # By: incognybble
 # Created: 7th Feb 2016
-# Last modified: 2nd Jun 2016
+# Last modified: 2nd Oct 2018
 
 import os
 
 from PIL import Image
 import piexif
+
+def _check_path(path):
+    """Check the path exists and return normalized path.
+    Raise exception if path does not exist.
+
+    path: Path to check
+    """
+    path = os.path.expanduser(path)
+    path = os.path.normpath(path)
+
+    if not os.path.exists(path):
+        raise Exception("%s does not exist" % path)
+    return path
 
 def remove_gps_exif(photo):
     """Return EXIF without GPS data, along with flag indicating if original
@@ -15,13 +28,8 @@ def remove_gps_exif(photo):
     exif_bytes: Modified EXIF data.
     gps: Flag indicating if original file had GPS EXIF data.
     """
-        
+    photo = _check_path(photo)
     exif_dict = piexif.load(photo)
-
-    """
-    for i in exif_dict["GPS"]:
-        print i, piexif.TAGS["GPS"][i]["name"], type(exif_dict["GPS"][i]), exif_dict["GPS"][i]
-    """
 
     gps = False
     if exif_dict["0th"].has_key(34853):
@@ -40,7 +48,8 @@ def modify_exif(photo, exif_bytes, new_photo=None):
     exif_bytes: EXIF data.
     new_photo: Modified file location. Optional.
     """
-    
+    photo = _check_path(photo)
+
     if new_photo == None:
         new_photo = photo
         
@@ -58,7 +67,8 @@ def remove_gps_folder(folder, new_folder=None, original=True, status_print=False
     status_print: Flag indicating whether to print current progress.
         Optional. Default is False.
     """
-    
+    folder = _check_path(folder)
+
     if new_folder == None:
         new_folder = folder
     elif not os.path.exists(new_folder):
